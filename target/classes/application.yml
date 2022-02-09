@@ -1,0 +1,52 @@
+app:
+  name: Persona application
+  api:
+    title: Persona Util APIs
+    version: 1.0.0
+    description: APIs clientes
+    base-package: com.primefaces
+    contact-name: Giancarlos Gutierrez
+    contact-email: ggutierrez@canvia.com
+server:
+  port: 5000
+logging:
+  level:
+    root: DEBUG
+    org.example: DEBUG
+spring:
+  banner:
+    location: classpath:banner.txt
+  h2:
+    console:
+      enabled: true
+      path: /console
+  datasource:
+    url: jdbc:h2:mem:personadb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_UPPER=false
+    username: sa
+    password:
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        use_sql_comments: true
+        format_sql: true
+  sql:
+    init:
+      mode: always
+      platform: h2
+
+joinfaces:
+  jsf:
+    interpret-empty-string-submitted-values-as-null: true
+
+aplication:
+  servers:
+    - ip: '0.0.0.0'
+
+spring-jackson.default-property-inclusion: non_null

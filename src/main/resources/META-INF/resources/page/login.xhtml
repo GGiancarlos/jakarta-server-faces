@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-PE"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+>
+<h:head>
+    <title>SISTEMA - PRIMEFACES</title>
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css"/>
+</h:head>
+<h:body>
+    <h:form id="form">
+        <p:outputPanel id="panel" styleClass="p-mt-5">
+            <p:card styleClass="p-mt-5" style="width: 25em; margin: 0 auto; text-align: center">
+                <f:facet name="header">
+                    <img alt="usuario" style="width: 60%" src="/images/undraw_login_re_4vu2.svg"/>
+                </f:facet>
+                <f:facet name="title">
+                    Auntentificación de Usuario
+                </f:facet>
+                <p>
+                    <p:inputText id="coUsua" value="#{loginSession.coUsua}"
+                                 placeholder="usuario"
+                                 required="true"
+                                 style="text-transform: uppercase;"
+                                 onblur="value = value.toUpperCase()"
+                    >
+                        <f:validateLength minimum="2"/>
+                        <p:ajax event="blur" update="msgCoUsua"/>
+
+                    </p:inputText>
+                </p>
+                <p>
+                    <p:inputText id="dePassUsua" value="#{loginSession.dePassUsua}"
+                                 placeholder="password"
+                                 required="true" maxlength="30"
+                                 style="text-transform: uppercase;"
+                                 onblur="value = value.toUpperCase()"
+                    >
+                        <f:validateLength minimum="2"/>
+                        <p:ajax event="blur" update="msgDePassUsua"/>
+                    </p:inputText>
+                </p>
+                <f:facet name="footer">
+                    <p:commandButton value="Ingresar" icon="pi pi-check" action="#{loginSession.login}"></p:commandButton>
+                    <p:commandButton icon="pi pi-times" value="Cancelar" styleClass="ui-button-secondary"
+                                     update="panel" process="@this" actionListener="#{loginSession.cancelar}"
+                                     style="margin-left: .5em"
+                    >
+                    </p:commandButton>
+                </f:facet>
+            </p:card>
+        </p:outputPanel>
+
+        <div class="p-mt-4" style="width: 25em; text-align: center;">
+            <p:message id="msgCoUsua" for="coUsua" display="text">
+            </p:message>
+        </div>
+
+        <div class="p-mt-2" style="width: 25em; text-align: center;">
+            <p:message id="msgDePassUsua" for="dePassUsua" display="text">
+            </p:message>
+        </div>
+
+    </h:form>
+
+</h:body>
+</html>

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es-PE"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+>
+<h:head>
+    <title>SISTEMA - PRIMEFACES</title>
+    <h:outputStylesheet library="webjars" name="primeflex/2.0.0/primeflex.min.css"/>
+</h:head>
+<h:body>
+    <div class="card">
+        <h:form>
+            <p:menubar>
+                <p:submenu label="File" icon="pi pi-fw pi-file">
+                </p:submenu>
+
+                <p:submenu label="Edit" icon="pi pi-fw pi-pencil">
+                </p:submenu>
+
+                <p:submenu label="Users" icon="pi pi-fw pi-user">
+                </p:submenu>
+
+                <p:submenu label="Events" icon="pi pi-fw pi-calendar">
+                </p:submenu>
+
+                <p:divider layout="vertical"/>
+
+                <p:menuitem value="Quit" action="#{personaView.logOut}" icon="pi pi-fw pi-power-off"/>
+
+                <f:facet name="options">
+                    <div class="ui-input-icon-left p-mr-2">
+                        <i class="pi pi-fw pi-search"/>
+                        <p:inputText placeholder="Search"/>
+                    </div>
+                    <p:commandButton value="Logout" action="#{personaView.logOut}" icon="pi pi-fw pi-sign-out"
+                                     styleClass="ui-button-info"/>
+                </f:facet>
+            </p:menubar>
+        </h:form>
+    </div>
+
+    <h:form id="form">
+        <p:outputPanel id="panel" styleClass="p-mt-2">
+            <p:card id="card" style="width: 97%;" class="p-t-2">
+                <f:facet name="header" style="text-align: center;"></f:facet>
+                <f:facet name="title"></f:facet>
+                <p:panel id="pnlAlumno" header="Mantenimiento de Persona" toggleable="true"
+                         toggleSpeed="500" widgetVar="panelPersona"
+                         style="margin-top: 10px; align-content: center;"
+                >
+                    <p:row>
+                        <p:column style="align-content: center;">
+                            <p:growl id="messages" showDetail="true"/>
+                            <p:toolbar>
+                                <p:toolbarGroup>
+                                    <p:commandButton value="Nuevo" icon="pi pi-plus"
+                                                     actionListener="#{personaView.abrirNuevo}"
+                                                     update=":form:persona-contenido"
+                                                     oncomplete="PF('mantPersonaDialog').show()"
+                                                     styleClass="ui-button-success" style="margin-right: .5rem"
+                                    >
+                                    </p:commandButton>
+                                </p:toolbarGroup>
+                                <p:toolbarGroup align="right">
+                                    <p:commandButton value="Exportar" icon="pi pi-upload" styleClass="ui-button-help"
+                                                     ajax="false">
+                                        <p:dataExporter type="xls" target="dtPersona" fileName="personas"/>
+                                    </p:commandButton>
+                                </p:toolbarGroup>
+                            </p:toolbar>
+
+                            <p:dataTable id="dtPersona" var="p"
+                                         value="#{personaView.personas}"
+                                         widgetVar="dataTable"
+                                         filteredValue="#{personaView.filteredPersonaLista}"
+                                         style="text-align: left"
+                                         paginatorPosition="bottom"
+                                         paginator="true" rows="10"
+                                         emptyMessage="No se han encontrado coincidencias con los criterios ingresados"
+                            >
+                                <p:column headerText="DNI" filterBy="#{p.dni}"
+                                          filterMatchMode="startsWith" sortBy="#{p.dni}"
+                                >
+                                    <h:outputText value="#{p.dni}"/>
+                                </p:column>
+
+                                <p:column headerText="Nombre" filterBy="#{p.nombre}"
+                                          filterMatchMode="startsWith" sortBy="#{p.nombre}"
+                                >
+                                    <h:outputText value="#{p.nombre}"/>
+                                </p:column>
+
+                                <p:column headerText="Apellido" filterBy="#{p.apellido}"
+                                          filterMatchMode="startsWith" sortBy="#{p.apellido}"
+                                >
+                                    <h:outputText value="#{p.apellido}"/>
+                                </p:column>
+
+                                <p:column headerText="Celular" filterBy="#{p.celular}"
+                                          filterMatchMode="startsWith" sortBy="#{p.celular}"
+                                >
+                                    <h:outputText value="#{p.celular}"/>
+                                </p:column>
+
+                                <p:column exportable="false" width="100">
+                                    <p:commandButton icon="pi pi-pencil" update=":form:persona-contenido"
+                                                     oncomplete="PF('mantPersonaDialog').show()"
+                                                     styleClass="edit-button rounded-button ui-button-success"
+                                                     process="@this">
+                                        <f:setPropertyActionListener value="#{p}"
+                                                                     target="#{personaView.selectedPersona}"/>
+                                    </p:commandButton>
+                                    <p:commandButton class="ui-button-danger rounded-button" icon="pi pi-trash"
+                                                     process="@this"
+                                                     oncomplete="PF('deletePersonaDialog').show()">
+                                        <f:setPropertyActionListener value="#{p}"
+                                                                     target="#{personaView.selectedPersona}"/>
+                                    </p:commandButton>
+                                </p:column>
+
+
+                            </p:dataTable>
+                        </p:column>
+                    </p:row>
+
+                </p:panel>
+            </p:card>
+        </p:outputPanel>
+
+        <p:confirmDialog widgetVar="deletePersonaDialog" showEffect="fade" width="300"
+                         message="¿Desea eliminar la persona?" header="Confirmar" severity="warn">
+            <p:commandButton value="Sí" icon="pi pi-check" actionListener="#{personaView.deletePersona}"
+                             process="@this" oncomplete="PF('deletePersonaDialog').hide()"/>
+            <p:commandButton value="No" type="button" styleClass="ui-button-secondary" icon="pi pi-times"
+                             onclick="PF('deletePersonaDialog').hide()"/>
+        </p:confirmDialog>
+
+        <p:dialog header="Persona Mantenimiento" showEffect="fade" modal="true" widgetVar="mantPersonaDialog"
+                  width="350" responsive="true">
+            <p:outputPanel id="persona-contenido" class="ui-fluid">
+                <div class="p-field">
+                    <p:outputLabel for="dni">DNI</p:outputLabel>
+                    <p:inputText id="dni" value="#{personaView.selectedPersona.dni}" maxlength="8"
+                                 disabled="#{personaView.selectedPersona.dni eq null ? false: true}"/>
+                </div>
+                <div class="p-field">
+                    <p:outputLabel for="nombre">Nombre</p:outputLabel>
+                    <p:inputText id="nombre" value="#{personaView.selectedPersona.nombre}"/>
+                </div>
+                <div class="p-field">
+                    <p:outputLabel for="apellido">Apellido</p:outputLabel>
+                    <p:inputText id="apellido" value="#{personaView.selectedPersona.apellido}"/>
+                </div>
+                <div class="p-field">
+                    <p:outputLabel for="celular">Celular</p:outputLabel>
+                    <p:inputText id="celular" maxlength="12" value="#{personaView.selectedPersona.celular}"/>
+                </div>
+
+            </p:outputPanel>
+            <f:facet name="footer">
+                <p:commandButton value="Guardar" icon="pi pi-check" actionListener="#{personaView.guardar}"
+                                 oncomplete="PF('mantPersonaDialog').hide()"
+                                 update="persona-contenido" process="persona-contenido @this"/>
+                <p:commandButton value="Cancelar" icon="pi pi-times" onclick="PF('mantPersonaDialog').hide()"
+                                 styleClass="ui-button-secondary"
+                />
+            </f:facet>
+
+        </p:dialog>
+
+    </h:form>
+</h:body>
+</html>
